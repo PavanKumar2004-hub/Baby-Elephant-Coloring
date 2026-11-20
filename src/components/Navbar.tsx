@@ -27,10 +27,10 @@ export const Navbar: React.FC<Props> = ({
 
   return (
     <nav className="bg-white/95 backdrop-blur-md sticky top-0 z-30 border-b-2 border-amber-200 shadow-xs">
-      {/* Top Banner Notice with Prominent Admin Access for Site Owner */}
+      {/* Top Banner Notice */}
       {announcementActive && (
-        <div className="bg-gradient-to-r from-amber-400 via-rose-400 to-indigo-600 text-white text-[11px] font-bold py-1 px-4 text-center flex items-center justify-between gap-2">
-          <div className="flex-1 text-center truncate">
+        <div className="bg-gradient-to-r from-amber-400 via-rose-400 to-indigo-600 text-white text-[11px] font-bold py-1 px-4 text-center flex items-center justify-center gap-2">
+          <div className="text-center truncate">
             <span>{announcementText}</span>
             <Link
               to="/licensing"
@@ -39,16 +39,6 @@ export const Navbar: React.FC<Props> = ({
               Commercial Rights Available →
             </Link>
           </div>
-
-          {/* 1-Click Clear Admin Access */}
-          <Link
-            to="/admin"
-            className="bg-black/30 hover:bg-black/50 text-white px-2.5 py-0.5 rounded-full text-[10px] font-mono flex items-center gap-1 transition flex-shrink-0 border border-white/20"
-            title="Admin Control Panel & Revenue Dashboard"
-          >
-            <Lock size={10} />
-            <span>Admin Portal</span>
-          </Link>
         </div>
       )}
 
@@ -80,12 +70,6 @@ export const Navbar: React.FC<Props> = ({
 
           {/* Mobile Right Controls */}
           <div className="flex md:hidden items-center gap-1.5">
-            <Link
-              to="/admin"
-              className="px-2 py-1 bg-slate-900 text-white rounded-lg text-xs font-bold"
-            >
-              Admin
-            </Link>
             <button
               onClick={onOpenTipJar}
               className="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100"

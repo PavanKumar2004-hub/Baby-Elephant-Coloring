@@ -325,30 +325,33 @@ export const AppContent: React.FC = () => {
       {globalSettings.enableBubbles && <FloatingBubbles />}
 
       <Routes>
-        {/* Isolated Enterprise Admin App Route */}
-        <Route
-          path="/admin"
-          element={
-            <AdminPage
-              sheets={sheets}
-              books={books}
-              licenses={licenses}
-              stats={stats}
-              adSettings={adSettings}
-              globalSettings={globalSettings}
-              activities={activities}
-              onUpdateSheets={setSheets}
-              onUpdateBooks={setBooks}
-              onUpdateLicenses={setLicenses}
-              onUpdateStats={setStats}
-              onUpdateAdSettings={setAdSettings}
-              onUpdateGlobalSettings={setGlobalSettings}
-              onAddActivity={handleAddActivity}
-              onClearActivities={handleClearActivities}
-              onRestoreAllData={handleRestoreAllData}
-            />
-          }
-        />
+        {/* Isolated Enterprise Admin Dashboard Route (Completely Hidden from Public Visitors) */}
+        {['/admin', '/manage', '/publisher'].map((path) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <AdminPage
+                sheets={sheets}
+                books={books}
+                licenses={licenses}
+                stats={stats}
+                adSettings={adSettings}
+                globalSettings={globalSettings}
+                activities={activities}
+                onUpdateSheets={setSheets}
+                onUpdateBooks={setBooks}
+                onUpdateLicenses={setLicenses}
+                onUpdateStats={setStats}
+                onUpdateAdSettings={setAdSettings}
+                onUpdateGlobalSettings={setGlobalSettings}
+                onAddActivity={handleAddActivity}
+                onClearActivities={handleClearActivities}
+                onRestoreAllData={handleRestoreAllData}
+              />
+            }
+          />
+        ))}
 
         {/* Public Routes with Navbar & Footer */}
         <Route

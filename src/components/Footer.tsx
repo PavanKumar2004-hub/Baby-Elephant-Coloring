@@ -128,12 +128,6 @@ export const Footer: React.FC<Props> = ({ onOpenTipJar }) => {
                 Zero intrusive popups, zero personal data harvesting. Wholesome, safe creative play.
               </p>
             </div>
-
-            <div className="text-[11px] text-slate-500">
-              <Link to="/admin" className="hover:text-slate-300 transition">
-                ⚙️ Portal Management
-              </Link>
-            </div>
           </div>
         </div>
 
