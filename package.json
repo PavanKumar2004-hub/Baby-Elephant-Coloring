@@ -1,0 +1,31 @@
+{
+  "name": "baby-elephant-coloring",
+  "version": "2.0.0",
+  "description": "Baby Elephant Coloring & Books - The Premier Interactive Kids Coloring Platform",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/qrcode": "^1.5.6",
+    "canvas-confetti": "^1.9.4",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.76.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

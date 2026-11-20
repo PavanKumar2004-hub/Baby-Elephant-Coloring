@@ -1,0 +1,7 @@
+# robots.txt for Baby Elephant Books & Illustrations
+User-agent: *
+Allow: /
+Disallow: /#/admin
+
+# Sitemaps
+Sitemap: https://babyelephantcoloring.com/sitemap.xml
