@@ -6,6 +6,12 @@ import { generateCustomMarketBookPDF, PDFGeneratorConfig } from '../utils/pdfBoo
 import { extractLineArtFromColorImage } from '../utils/lineArtExtractor';
 import { optimizeImageFile, formatBytes } from '../utils/imageOptimizer';
 import {
+  saveSheetToCloud,
+  deleteSheetFromCloud,
+  saveBookToCloud,
+  deleteBookFromCloud
+} from '../utils/supabase';
+import {
   TrendingUp,
   FileImage,
   ShieldCheck,
@@ -314,20 +320,21 @@ export const AdminPage: React.FC<Props> = ({
   };
 
   // 3. Sheet CRUD Handlers
-  const handleDeleteSheet = (id: string) => {
+  const handleDeleteSheet = async (id: string) => {
     if (!confirm('Are you sure you want to remove this coloring sheet?')) return;
     onUpdateSheets(sheets.filter((s) => s.id !== id));
+    await deleteSheetFromCloud(id);
     onAddActivity({
       id: 'act-' + Date.now(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       type: 'license',
       title: 'Sheet Removed from Catalog',
-      detail: `Sheet ID: ${id} deleted by Administrator`,
+      detail: `Sheet ID: ${id} deleted by Administrator (synced to cloud)`,
       badgeColor: 'bg-rose-500'
     });
   };
 
-  const handleSheetSubmit = (e: React.FormEvent) => {
+  const handleSheetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sheetFormData.title || !sheetFormData.outline) {
       alert('Please provide a Title and Outline image (or upload a file).');
@@ -335,9 +342,11 @@ export const AdminPage: React.FC<Props> = ({
     }
 
     if (editingSheet) {
+      const updatedSheet = { ...editingSheet, ...sheetFormData } as ColoringSheet;
       onUpdateSheets(
-        sheets.map((s) => (s.id === editingSheet.id ? ({ ...s, ...sheetFormData } as ColoringSheet) : s))
+        sheets.map((s) => (s.id === editingSheet.id ? updatedSheet : s))
       );
+      await saveSheetToCloud(updatedSheet);
     } else {
       const newSheet: ColoringSheet = {
         id: 'sheet-' + Date.now(),
@@ -361,12 +370,13 @@ export const AdminPage: React.FC<Props> = ({
         ]
       };
       onUpdateSheets([newSheet, ...sheets]);
+      await saveSheetToCloud(newSheet);
       onAddActivity({
         id: 'act-' + Date.now(),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: 'download',
-        title: 'New Sheet Published',
-        detail: `"${newSheet.title}" added to ${newSheet.category}`,
+        title: 'New Sheet Published (Cloud Synced)',
+        detail: `"${newSheet.title}" added to ${newSheet.category} & saved to Supabase`,
         badgeColor: 'bg-emerald-500'
       });
     }
@@ -376,20 +386,21 @@ export const AdminPage: React.FC<Props> = ({
   };
 
   // 4. Book CRUD Handlers
-  const handleDeleteBook = (id: string) => {
+  const handleDeleteBook = async (id: string) => {
     if (!confirm('Are you sure you want to delete this coloring book?')) return;
     onUpdateBooks(books.filter((b) => b.id !== id));
+    await deleteBookFromCloud(id);
     onAddActivity({
       id: 'act-' + Date.now(),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       type: 'license',
       title: 'Book Collection Deleted',
-      detail: `Book ID: ${id} deleted`,
+      detail: `Book ID: ${id} deleted (synced to cloud)`,
       badgeColor: 'bg-rose-500'
     });
   };
 
-  const handleBookSubmit = (e: React.FormEvent) => {
+  const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!bookFormData.title || !bookFormData.coverImage) {
       alert('Please provide a Book Title and Cover Image.');
@@ -397,9 +408,11 @@ export const AdminPage: React.FC<Props> = ({
     }
 
     if (editingBook) {
+      const updatedBook = { ...editingBook, ...bookFormData } as ColoringBookData;
       onUpdateBooks(
-        books.map((b) => (b.id === editingBook.id ? ({ ...b, ...bookFormData } as ColoringBookData) : b))
+        books.map((b) => (b.id === editingBook.id ? updatedBook : b))
       );
+      await saveBookToCloud(updatedBook);
     } else {
       const newBook: ColoringBookData = {
         id: 'book-' + Date.now(),
@@ -419,12 +432,13 @@ export const AdminPage: React.FC<Props> = ({
         ]
       };
       onUpdateBooks([newBook, ...books]);
+      await saveBookToCloud(newBook);
       onAddActivity({
         id: 'act-' + Date.now(),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: 'download',
-        title: 'New Coloring Book Published',
-        detail: `"${newBook.title}" (${newBook.pageCount} Pages)`,
+        title: 'New Coloring Book Published (Cloud Synced)',
+        detail: `"${newBook.title}" (${newBook.pageCount} Pages) saved to Supabase`,
         badgeColor: 'bg-indigo-500'
       });
     }

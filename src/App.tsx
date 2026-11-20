@@ -20,9 +20,14 @@ import { CommercialLicenseModal } from './components/CommercialLicenseModal';
 import { LittleArtistCertificateModal } from './components/LittleArtistCertificateModal';
 import { TipJarModal } from './components/TipJarModal';
 import { generateCompleteBookPDF, generateSingleSheetPDF, generateClassroomSetPDF } from './utils/pdfGenerator';
+import {
+  fetchSheetsFromCloud,
+  fetchBooksFromCloud,
+  seedInitialCloudDataIfNeeded
+} from './utils/supabase';
 
 export const AppContent: React.FC = () => {
-  // 1. Data States (persisted to LocalStorage)
+  // 1. Data States (persisted to LocalStorage + synced to Supabase Cloud)
   const [sheets, setSheets] = useState<ColoringSheet[]>(() => {
     const saved = localStorage.getItem('be_sheets');
     return saved ? JSON.parse(saved) : INITIAL_SHEETS;
@@ -32,6 +37,35 @@ export const AppContent: React.FC = () => {
     const saved = localStorage.getItem('be_books');
     return saved ? JSON.parse(saved) : COLORING_BOOKS;
   });
+
+  // Cloud Sync on Mount: Fetch real-time published sheets & books from Supabase Cloud
+  useEffect(() => {
+    let isMounted = true;
+    async function syncCloud() {
+      try {
+        const cloudSheets = await fetchSheetsFromCloud();
+        if (isMounted && cloudSheets && cloudSheets.length > 0) {
+          setSheets(cloudSheets);
+          localStorage.setItem('be_sheets', JSON.stringify(cloudSheets));
+        }
+
+        const cloudBooks = await fetchBooksFromCloud();
+        if (isMounted && cloudBooks && cloudBooks.length > 0) {
+          setBooks(cloudBooks);
+          localStorage.setItem('be_books', JSON.stringify(cloudBooks));
+        }
+
+        // Auto-seed initial catalog if cloud database is brand new and empty
+        if ((!cloudSheets || cloudSheets.length === 0) || (!cloudBooks || cloudBooks.length === 0)) {
+          await seedInitialCloudDataIfNeeded(INITIAL_SHEETS, COLORING_BOOKS);
+        }
+      } catch (e) {
+        console.warn('Supabase initial fetch skipped / offline:', e);
+      }
+    }
+    syncCloud();
+    return () => { isMounted = false; };
+  }, []);
 
   const [licenses, setLicenses] = useState<CommercialLicense[]>(() => {
     const saved = localStorage.getItem('be_licenses');
