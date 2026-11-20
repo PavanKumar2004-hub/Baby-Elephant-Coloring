@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { ColoringSheet, CommercialLicense, SiteStats, AdSettings, GlobalSettings, ActivityItem } from './types';
 import { INITIAL_SHEETS } from './data/sheets';
 import { COLORING_BOOKS, ColoringBookData } from './data/books';
